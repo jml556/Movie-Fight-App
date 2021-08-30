@@ -32,9 +32,9 @@ const autocomplete = ({root}) => {
             `
             resultsWrapper.appendChild(option)
             option.addEventListener('click', () => {
-                console.log('g')
                 input.value = movie.Title
                 dropdown.classList.remove('is-active')
+                onMovieSelect(movie)
             })
         }
     }
@@ -44,4 +44,14 @@ const autocomplete = ({root}) => {
         }
     })
     input.addEventListener('keyup', debounce(getInput))
+}
+
+async function onMovieSelect(movie) {
+    const response = await axios.get('https://www.omdbapi.com/', {
+        params: {
+            apikey: 'ab8357e1',
+            i: movie.imdbID
+        }
+    });
+    console.log(response.data)
 }
