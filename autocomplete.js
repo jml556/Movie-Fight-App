@@ -16,11 +16,14 @@ const autocomplete = ({root}) => {
     const getInput = async event => {
         resultsWrapper.innerHTML = ''
         const movies = await getData(event.target.value)
+
         if(!movies.length) {
             dropdown.classList.remove('is-active')
             return;
         }
+
         dropdown.classList.add('is-active')
+
         for (let movie of movies) {
             const option = document.createElement('a')
             option.classList.add('dropdown-item')
@@ -31,11 +34,13 @@ const autocomplete = ({root}) => {
                 ${movie.Title}
             `
             resultsWrapper.appendChild(option)
+
             option.addEventListener('click', () => {
                 input.value = movie.Title
                 dropdown.classList.remove('is-active')
                 onMovieSelect(movie)
             })
+
         }
     }
     document.addEventListener('click', (event) => {
@@ -53,5 +58,25 @@ async function onMovieSelect(movie) {
             i: movie.imdbID
         }
     });
-    console.log(response.data)
+    
+    document.querySelector('#summary').innerHTML = movieTemplate(response.data)
+}
+
+const movieTemplate = (movieDetail) => {
+    return `
+        <article class="media">
+            <figure class="media-left">
+            <p class="image">
+                <img src="${movieDetail.Poster}">
+            </p>
+            </figure>
+            <div class="media-content">
+            <div class="content">
+                <h1>${movieDetail.Title}</h1>
+                <h4>${movieDetail.Genre}</h4>
+                <p>${movieDetail.Plot}</p>
+            </div>
+            </div>
+        </article>
+    `
 }
